@@ -53,9 +53,9 @@ public class ImgDownloader {
 
         while (nums.get() < 3000){
             try {
-                semaphore.acquire();
                 String uri = imgQueue.take();
                 if (!memory.contains(uri)) {
+                    semaphore.acquire();
                     executor.submit(new DownloadImg(uri));
                     TimeUnit.MILLISECONDS.sleep(100);
                 }
@@ -90,13 +90,17 @@ public class ImgDownloader {
                 Document document = connection.get();
                 // 获取收藏数
                 Pattern pattern = Pattern.compile(";bookmarkCount&quot;:(.*?),&quot;");
+                Pattern pattern2 = Pattern.compile(";likeCount&quot;:(.*?),&quot;");
                 Matcher matcher = pattern.matcher(document.html());
-                if (!matcher.find()) {
+                Matcher matcher1 = pattern2.matcher(document.html());
+                if (!matcher.find() || !matcher1.find()) {
                     System.out.println(imgId+" 爬取失败!");
                     return;
                 }
+
                 Integer markCount = Integer.valueOf(matcher.group(1));
-                if (markCount > 4000){
+                Integer likeCount = Integer.valueOf(matcher1.group(1));
+                if (likeCount > 5000 && markCount > 5000){
                     try {
                         new ImgDownUtil(imgUrl, "jpg", fileName,
                                 headers, proxy).download();

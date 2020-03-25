@@ -44,7 +44,9 @@ public class PageLoader {
             pathList.add(path.asString());
         }
         System.out.println("页面初始化完成，开始爬取...");
-        new Thread(new ImgLoader()).start();
+        Thread imgLoader = new Thread(new ImgLoader());
+        imgLoader.setPriority(Thread.MAX_PRIORITY);
+        imgLoader.start();
     }
 
     class ImgLoader implements Runnable{
