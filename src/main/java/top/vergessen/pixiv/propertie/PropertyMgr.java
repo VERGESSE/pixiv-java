@@ -3,6 +3,7 @@ package top.vergessen.pixiv.propertie;
 import java.io.IOException;
 import java.util.Properties;
 
+// 配置文件解析器
 public class PropertyMgr {
 
     private static final PropertyMgr propertyMgr = new PropertyMgr();

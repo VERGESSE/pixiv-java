@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+// 图片整理器
+// 整理后会把小图片，宽图，长图分类
 public class ImgCleaner {
 
     private static final ImgCleaner instance = new ImgCleaner();
@@ -21,7 +23,7 @@ public class ImgCleaner {
         return instance;
     }
 
-    public void startCleaner(String imgFile){
+    public synchronized void startCleaner(String imgFile){
         System.out.println("开始整理图片...");
         File file = new File(imgFile);
         File small = new File("small");

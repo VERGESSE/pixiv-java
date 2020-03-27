@@ -5,6 +5,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import top.vergessen.pixiv.propertie.PropertyMgr;
 
+// 封装selenium的执行器，方便使用
 public class MyDriver {
 
     private static final MyDriver driver = new MyDriver();

@@ -8,6 +8,7 @@ import java.io.*;
 import java.net.Proxy;
 import java.util.HashMap;
 
+// 图片下载工具类
 public class ImgDownUtil {
 
     private String imgUrl;
@@ -32,6 +33,7 @@ public class ImgDownUtil {
         Connection imgConnection = Jsoup
                 .connect("https://i.pximg.net/img-original/img/"+imgUrl+"."+type)
                 .headers(headers)
+                // 此处不设置referrer无法下载
                 .referrer("https://www.pixiv.net/member_illust.php?mode=medium&illust_id="+imgId)
                 .proxy(proxy)
                 .ignoreContentType(true)

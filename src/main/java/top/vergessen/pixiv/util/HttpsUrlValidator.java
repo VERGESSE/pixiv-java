@@ -11,7 +11,7 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.*;
 
-
+// 信任https的操作
 public class HttpsUrlValidator {
 
     static HostnameVerifier hv = new HostnameVerifier() {
