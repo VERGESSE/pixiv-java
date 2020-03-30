@@ -91,16 +91,19 @@ public class ImgCleaner {
 
         @Override
         public void run() {
+            // 获取输出输入流
             try(BufferedInputStream recIN = new BufferedInputStream(
                     new FileInputStream(src));
                 BufferedOutputStream targetOS = new BufferedOutputStream(
                         new FileOutputStream(target))){
 
+                // 拷贝
                 IOUtils.copy(recIN, targetOS);
                 targetOS.flush();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            // 删除原文件
             src.delete();
         }
     }

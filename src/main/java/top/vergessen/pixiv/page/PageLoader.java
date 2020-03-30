@@ -22,6 +22,9 @@ public class PageLoader {
 
     private static final String PIVIX = "https://www.pixiv.net";
 
+    // 停止信号
+    private static final String EXIT_SINGLE = "EXIT";
+
     // 源地址
     private String originPath;
     // 从源地址获取的目的地址列表
@@ -87,6 +90,12 @@ public class PageLoader {
                     System.out.println("页面: " + ++num + " 爬取完成 "+i);
                 }
             }finally {
+                // 发送停止信号
+                try {
+                    imgQueue.put(EXIT_SINGLE);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 // 最后停止driver
                 driver.quit();
             }

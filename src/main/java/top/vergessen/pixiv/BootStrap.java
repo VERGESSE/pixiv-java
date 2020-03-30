@@ -9,7 +9,7 @@ import java.util.concurrent.*;
 
 public class BootStrap {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         // 存储图片路径的阻塞队列
         BlockingQueue<String> imageQueue = new LinkedBlockingDeque<>(100);
@@ -36,8 +36,10 @@ public class BootStrap {
 
         // 确保当前提交任务执行完成
         executor.shutdown();
-        while (executor.isShutdown());
-
+        System.out.println("-----------");
+        while (!executor.isTerminated()){
+            TimeUnit.SECONDS.sleep(3);
+        }
         // 最后再对图片执行一次整理
         ImgCleaner.getInstance().startCleaner("image");
     }

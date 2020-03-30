@@ -4,6 +4,7 @@ import org.jsoup.Connection;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import top.vergessen.pixiv.page.PageLoader;
 import top.vergessen.pixiv.util.HttpsUrlValidator;
 import top.vergessen.pixiv.util.ImgDownUtil;
 
@@ -55,11 +56,14 @@ public class ImgDownloader {
         // 允许所有https
         HttpsUrlValidator.trustEveryone();
 
-        // 每次获取3000张图片，可以调整至4000左右，个人认为3000已经够了
-        while (nums.get() < 3000){
+        while (true){
             try {
                 // 获取待执行的图片地址
                 String uri = imgQueue.take();
+                // 收到停止信号退出
+                if (uri.equals("EXIT")) {
+                    break;
+                }
                 // 判断是否已经下载过
                 if (!memory.contains(uri)) {
                     semaphore.acquire();
