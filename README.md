@@ -11,6 +11,4 @@ P站爬虫java版
 selenium需要的chromedriver已经提供，只需要修改配置文件中的chrome用户文件地址即可
 需要chrome客户端79+    否则自己去下载chromedriver
 
-nomaven分支为不使用maven的版本
-
 如还有不懂请留言或加q：1258252786交流

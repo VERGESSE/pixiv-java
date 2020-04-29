@@ -3,6 +3,7 @@ package top.vergessen.pixiv;
 import top.vergessen.pixiv.img.ImgCleaner;
 import top.vergessen.pixiv.img.ImgDownloader;
 import top.vergessen.pixiv.page.PageLoader;
+import top.vergessen.pixiv.propertie.PropertyMgr;
 
 import java.util.Scanner;
 import java.util.concurrent.*;
@@ -11,13 +12,16 @@ public class BootStrap {
 
     public static void main(String[] args) throws InterruptedException {
 
+        // 保存图片的根路径
+        String imgPath =  PropertyMgr.getString("path");
+        Integer threadPath = PropertyMgr.getInt("threadPath");
         // 存储图片路径的阻塞队列
-        BlockingQueue<String> imageQueue = new LinkedBlockingDeque<>(100);
+        BlockingQueue<String> imageQueue = new LinkedBlockingDeque<>(threadPath*2);
         // 图片下载任务执行线程池
-        ExecutorService executor = new ThreadPoolExecutor(100, Integer.MAX_VALUE,
-                150, TimeUnit.SECONDS, new SynchronousQueue<>());
+        ExecutorService executor = new ThreadPoolExecutor(threadPath, Integer.MAX_VALUE,
+                threadPath*2, TimeUnit.SECONDS, new SynchronousQueue<>());
         // 保证线程池在接收一定数量任务后程序阻塞等待任务执行
-        Semaphore semaphore = new Semaphore(200);
+        Semaphore semaphore = new Semaphore(threadPath*2);
 
         // 获取用户输入初始路径
         Scanner scanner = new Scanner(System.in);
@@ -36,11 +40,10 @@ public class BootStrap {
 
         // 确保当前提交任务执行完成
         executor.shutdown();
-        System.out.println("-----------");
         while (!executor.isTerminated()){
             TimeUnit.SECONDS.sleep(3);
         }
         // 最后再对图片执行一次整理
-        ImgCleaner.getInstance().startCleaner("image");
+        ImgCleaner.getInstance().startCleaner(imgPath + "/image");
     }
 }

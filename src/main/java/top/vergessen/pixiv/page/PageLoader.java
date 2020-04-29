@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 // 页面加载解析器
 public class PageLoader {
 
-    private static final String PIVIX = "https://www.pixiv.net";
+    private static final String PIXIV = "https://www.pixiv.net";
 
     // 停止信号
     private static final String EXIT_SINGLE = "EXIT";
@@ -69,7 +69,7 @@ public class PageLoader {
             try {
                 for (String s : pathList) {
                     // 获取页面dom
-                    Document doc = load(PIVIX + s);
+                    Document doc = load(PIXIV + s);
                     // 解析dom，获取图片地址
                     List<JXNode> imgUrls = new XpathUtil(doc)
                             .xpath("//li/div/div/div/a/div/img/@src");
@@ -108,7 +108,7 @@ public class PageLoader {
         String js = "window.scrollTo(0,document.body.scrollHeight)";
         for (int i = 0; i < 10; i++){
             try {
-                TimeUnit.SECONDS.sleep(3);
+                TimeUnit.SECONDS.sleep(1);
                 ((JavascriptExecutor) driver).executeScript(js);
                 try {
                     WebElement element = driver.findElement(By.xpath("//*[@id='root']/div[3]/div/aside[2]/div/div[2]/button"));

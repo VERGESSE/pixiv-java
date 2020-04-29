@@ -1,6 +1,7 @@
 package top.vergessen.pixiv.img;
 
 import org.apache.commons.io.IOUtils;
+import top.vergessen.pixiv.propertie.PropertyMgr;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -8,14 +9,16 @@ import java.io.*;
 import java.util.HashSet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 // 图片整理器
 // 整理后会把小图片，宽图，长图分类
 public class ImgCleaner {
 
+    // 图片保存路径
+    private static final String imgPath =  PropertyMgr.getString("path");
+
     private static final ImgCleaner instance = new ImgCleaner();
-    private static final ExecutorService executor =
-            Executors.newCachedThreadPool();
 
     private ImgCleaner() {}
 
@@ -25,10 +28,12 @@ public class ImgCleaner {
 
     public synchronized void startCleaner(String imgFile){
         System.out.println("开始整理图片...");
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+
         File file = new File(imgFile);
-        File small = new File("small");
-        File widthFile = new File("width");
-        File heightFile = new File("height");
+        File small = new File(imgPath + "/small");
+        File widthFile = new File(imgPath + "/width");
+        File heightFile = new File(imgPath + "/height");
         if(!file.exists())
             file.mkdirs();
         if(!small.exists())
@@ -40,9 +45,9 @@ public class ImgCleaner {
         String[] list = file.list();
         for (String path : list) {
             File oldFile = new File(imgFile + "/" + path);
-            File newFile = new File("small" + "/" + path);
-            widthFile = new File("width" + "/" + path);
-            heightFile = new File("height" + "/" + path);
+            File newFile = new File(imgPath + "/small" + "/" + path);
+            widthFile = new File(imgPath + "/width" + "/" + path);
+            heightFile = new File(imgPath + "/height" + "/" + path);
             BufferedImage image;
             try {
                 image = ImageIO.read(oldFile);
@@ -54,29 +59,37 @@ public class ImgCleaner {
                     continue;
                 }
                 if (size < 500000) {
-                    executor.submit(new RemoveFile(oldFile, newFile));
+                    executor.execute(new RemoveFile(oldFile, newFile));
                     continue;
                 }
                 if (Math.min(height, width) < 950){
-                    executor.submit(new RemoveFile(oldFile, newFile));
+                    executor.execute(new RemoveFile(oldFile, newFile));
                     continue;
                 }else if (Math.max(height, width) < 1800){
-                    executor.submit(new RemoveFile(oldFile, newFile));
+                    executor.execute(new RemoveFile(oldFile, newFile));
                     continue;
                 }
                 if (width > height)
-                    executor.submit(new RemoveFile(oldFile, widthFile));
+                    executor.execute(new RemoveFile(oldFile, widthFile));
                 else if (width <= height)
-                    executor.submit(new RemoveFile(oldFile, heightFile));
+                    executor.execute(new RemoveFile(oldFile, heightFile));
             }catch (IOException e) {
                 oldFile.delete();
+            }
+        }
+        executor.shutdown();
+        while (!executor.isTerminated()){
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
         System.out.println("图片整理结束...");
     }
 
     public static void main(String[] args) {
-        ImgCleaner.getInstance().startCleaner("image");
+        ImgCleaner.getInstance().startCleaner("H:/img/image");
     }
 
     class RemoveFile implements Runnable{

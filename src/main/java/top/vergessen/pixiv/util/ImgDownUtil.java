@@ -28,8 +28,9 @@ public class ImgDownUtil {
 
     public void download() throws IOException {
         HttpsUrlValidator.trustEveryone();
+
         String[] split = imgUrl.split("/");
-        String imgId = split[split.length - 1].substring(0,8);
+        String imgId = split[split.length - 1].split("_")[0];
         Connection imgConnection = Jsoup
                 .connect("https://i.pximg.net/img-original/img/"+imgUrl+"."+type)
                 .headers(headers)

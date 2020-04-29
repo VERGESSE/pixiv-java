@@ -25,7 +25,8 @@ public class MyDriver {
         options.addArguments("--disable-infobars");
         options.addArguments("--disable-dev-shm-usage");
         options.addArguments("--disable-browser-side-navigation");
-        options.addArguments("blink-settings=imagesEnabled=false");
+        // 不加载图片模式
+//        options.addArguments("blink-settings=imagesEnabled=false");
 
         webDriver = new ChromeDriver(options);
     }
