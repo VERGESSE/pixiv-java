@@ -39,16 +39,6 @@ public class ImgDownloader {
         headers.put("Accept-Language","zh-CN,zh;q=0.9");
         headers.put("Accept-Encoding","");
         headers.put("Connection","keep-alive");
-
-        // 注入之前下载过的图片。不重复下载
-        File file = new File("H:/wallpaper/P站壁纸/电脑壁纸，质量保证");
-        for (String s : file.list()) {
-            memory.add(s.split("\\.")[0]);
-        }
-        file = new File("H:/wallpaper/P站壁纸/精品小图，手机可用");
-        for (String s : file.list()) {
-            memory.add(s.split("\\.")[0]);
-        }
     }
 
     // 图片保存路径
